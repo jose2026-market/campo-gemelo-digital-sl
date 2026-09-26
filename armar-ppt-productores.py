@@ -10,7 +10,7 @@ from lxml import etree
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-FOTO = ROOT / "assets" / "hereford-vaca-ternero-belgrano.png"
+FOTO = ROOT / "assets" / "srsl-vaca-ternero-2026.png"
 LOGO = ROOT / "assets" / "logo-sociedad-rural-san-luis.png"
 OUT = ROOT / "Gemelo-Digital-Ganadero-productores.pptx"
 URL = "https://jose2026-market.github.io/gemelo-500ha-la-calera/"
@@ -403,7 +403,7 @@ def main():
         p.alignment = PP_ALIGN.CENTER
         p.clear()
         r = p.add_run()
-        r.text = "Hereford con ternero  ·  cría típica del oeste de San Luis"
+        r.text = "Hereford con ternero  ·  Sociedad Rural de San Luis"
         r.font.size = Pt(11)
         r.font.italic = True
         r.font.color.rgb = ORO
