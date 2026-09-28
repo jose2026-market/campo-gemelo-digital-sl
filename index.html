@@ -200,10 +200,10 @@
       display: block; text-align: center; background: #f4eee0; border-radius: 6px;
       padding: 5px 3px; font-size: 9px; line-height: 1.25; color: #5C564F;
     }
-    .diag-ano .diag-cif b { display: block; color: var(--verde); font-size: 13px; }
+    .diag-ano .diag-cif b { display: block; color: var(--verde); font-size: 15px; }
     .diag-ano .diag-cif .alerta b { color: #B42318; }
-    .diag-ano svg { display: block; width: 100%; height: auto; }
-    .diag-ano .diag-ley { margin: 4px 0 6px; font-size: 9px; color: #5C564F; }
+    .diag-ano svg { display: block; width: 100%; height: auto; min-height: 118px; }
+    .diag-ano .diag-ley { margin: 1px 0 3px; font-size: 8px; line-height: 1.2; color: #5C564F; }
     .diag-ano .diag-acc { margin: 0; padding: 0; list-style: none; }
     .diag-ano .diag-acc li {
       margin: 0 0 5px; padding: 5px 7px; border-radius: 6px;
@@ -311,18 +311,18 @@
       box-shadow: 0 10px 22px rgba(0,0,0,.28);
     }
     #dropManejo > .cuerpo {
-      max-height: calc(100dvh - var(--topbar-h) - 108px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
-      width: min(360px, calc(100vw - 20px));
-      max-width: min(360px, calc(100vw - 16px));
-      min-width: 280px;
-      padding: 8px 8px 10px;
+      max-height: calc(100dvh - var(--topbar-h) - 72px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+      width: min(420px, calc(100vw - 16px));
+      max-width: min(420px, calc(100vw - 12px));
+      min-width: 300px;
+      padding: 8px 10px 12px;
     }
     #dropManejo .hint { margin: 0 0 4px; font-size: 9px; line-height: 1.25; }
     #dropManejo .cruz-est { margin: 2px 0 4px; }
     #dropManejo .cruz-est button { padding: 4px 2px; font-size: 8px; }
     #dropManejo .tres-sit { margin: 2px 0 4px; }
-    #dropManejo .tres-sit .sit-col { padding: 4px 4px; font-size: 9px; gap: 1px; }
-    #dropManejo .tres-sit .sit-col b { font-size: 10px; }
+    #dropManejo .tres-sit .sit-col { padding: 6px 4px; font-size: 10px; gap: 2px; }
+    #dropManejo .tres-sit .sit-col b { font-size: 11px; }
     #dropManejo .eq-solapa { height: 12px; margin: 4px 0; }
     .desplegables details.sub > .cuerpo {
       position: static; max-width: none; max-height: none; min-width: 0;
@@ -384,7 +384,23 @@
     #avisoTope { background: #FDECEC; border: 1px solid #E8A0A0; color: #8A1F16; }
     #avisoManejo { background: #E7F3EC; border: 1px solid #9FCBB0; color: #0D5C2C; }
     .tres-sit-nota { grid-column: 1 / -1; margin: 0 0 4px; font-size: 10px; color: #5C564F; }
-    .tres-sit .sit-col.flash { box-shadow: 0 0 0 2px var(--verde); }
+    .tres-sit .sit-col.flash {
+      box-shadow: 0 0 0 3px var(--verde);
+      background: #E7F3EC;
+    }
+    @keyframes btn-guardado {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    #btnGuardar.punto-act { margin-top: 0; }
+    #btnGuardar.punto-act.ok {
+      background: #1B7A4A;
+      animation: btn-guardado 0.45s ease;
+    }
+    #avisoManejo.visto {
+      background: #1B7A4A; color: #fff; border-color: #0D5C2C; font-weight: 800;
+    }
     .leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
     .ficha-oficial b { color: var(--verde); }
     .ficha-oficial[hidden] { display: none; }
@@ -608,7 +624,7 @@
         width: auto;
         max-width: none;
         min-width: 0;
-        max-height: calc(100dvh - var(--topbar-h) - 108px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+        max-height: calc(100dvh - var(--topbar-h) - 72px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
         padding: 8px 10px 12px;
         z-index: 1250;
         border-radius: 10px;
@@ -616,8 +632,8 @@
       #dropManejo .hint { display: none; }
       #dropManejo .escenas { flex-direction: row; gap: 4px; }
       #dropManejo .escenas button { flex: 1; width: auto; padding: 7px 4px; font-size: 11px; }
-      #dropManejo .diag-cif b { font-size: 16px; }
-      #dropManejo .diag-ano svg { min-height: 108px; }
+      #dropManejo .diag-cif b { font-size: 17px; }
+      #dropManejo .diag-ano svg { min-height: 124px; }
       #dropManejo .diag-acc li { font-size: 12px; }
       .leaflet-bottom.leaflet-right {
         bottom: calc(58px + env(safe-area-inset-bottom, 0px));
@@ -746,7 +762,7 @@
       </article>
     </div>
     <p class="nota">Cada campo se estudia por separado. Capas: satélite, verde NDVI, INTA, OTBN, lluvia y tasa de forraje.</p>
-    <p class="nota"><a href="presentacion.html">Presentación para productores (4 diapositivas)</a> · <a href="Gemelo-Digital-Ganadero-productores.pptx">PowerPoint</a> · <a href="instructivo.html">Instructivo</a></p>
+    <p class="nota"><a href="acto.html">Acto inaugural (pantalla completa)</a> · <a href="presentacion.html">4 diapositivas</a> · <a href="Gemelo-Digital-Ganadero-productores.pptx">PowerPoint</a> · <a href="instructivo.html">Instructivo</a></p>
   </section>
   <section class="informe" id="informe">
     <article class="papel" id="cuerpoInforme"></article>
@@ -1001,7 +1017,7 @@
           <button type="button" class="punto-act" id="btnActualizarManejo"><span class="punto"></span> Actualizar este dato</button>
           <div class="acciones">
             <button type="button" class="sec" id="btnKml">Ver en Google Earth</button>
-            <button type="button" id="btnGuardar">Guardar este manejo</button>
+            <button type="button" class="punto-act" id="btnGuardar"><span class="punto"></span> Guardar este manejo</button>
           </div>
         </div>
       </details>
@@ -1062,6 +1078,97 @@
       if (!Number.isFinite(x) || x < 0) return 0;
       return Math.round(x);
     }
+    function techoCampo(esc) {
+      const ha = haTotal();
+      if (potreros.length) {
+        const s = potreros.reduce((acc, p) => {
+          const tipo = (store[p.n] && store[p.n].tipo) || "ganadero";
+          return acc + Number(techoEscena(p, tipo, esc).cabezasMax || 0);
+        }, 0);
+        return nAnimales(s);
+      }
+      if (!(ha > 0)) return 0;
+      const haEV = esc === "actual" ? 12.6 : 10;
+      return nAnimales(ha / haEV);
+    }
+    function cabezasTablero(esc) {
+      const elEv = document.getElementById("fEv");
+      const elCab = document.getElementById("fCabezas");
+      const leido = (v) => {
+        if (v == null || v === "") return null;
+        const n = nAnimales(v);
+        return n > 0 ? n : null;
+      };
+      if (esc === escSel && elEv && document.activeElement === elEv && elEv.value !== "") {
+        return nAnimales(elEv.value);
+      }
+      if (esc === "actual" && elCab && document.activeElement === elCab && elCab.value !== "") {
+        return nAnimales(elCab.value);
+      }
+      if (esc === "actual" && store.cargoCabezas) {
+        return nAnimales(store.cabezas);
+      }
+      if (esc === "actual") {
+        const nStore = leido(store.cabezas);
+        if (nStore != null) return nStore;
+      }
+      for (let i = 0; i < potreros.length; i++) {
+        const extra = cargasProductor(potreros[i], esc);
+        if (extra._sinCarga) continue;
+        const nEx = leido(extra.cabezas);
+        if (nEx != null) return nEx;
+      }
+      if (esc === escSel) {
+        const nEv = leido(elEv && elEv.value);
+        if (nEv != null) return nEv;
+      }
+      if (esc === "actual") {
+        const nCab = leido(elCab && elCab.value);
+        if (nCab != null) return nCab;
+      }
+      if (esc !== "actual") return cabezasTablero("actual");
+      return techoCampo("actual");
+    }
+    function setCabezasCampo(n, esc) {
+      n = nAnimales(n);
+      const e = esc || "actual";
+      if (e === "actual") {
+        store.cabezas = n;
+        if (n > 0) store.cargoCabezas = true;
+      }
+      const elCab = document.getElementById("fCabezas");
+      const elEv = document.getElementById("fEv");
+      if (e === "actual" && elCab) elCab.value = n;
+      if (e === escSel && elEv) elEv.value = n;
+      const esp = especieAct();
+      const over = {
+        cabezas: n,
+        ev: +(n * (esp.evPorCabeza || 1)).toFixed(2),
+        _sinCarga: false
+      };
+      const dests = [];
+      if (potreros[0]) dests.push(potreros[0]);
+      const sel = potreros.find((x) => x.n === pSel);
+      if (sel && (!dests[0] || sel.n !== dests[0].n)) dests.push(sel);
+      dests.forEach((dest) => {
+        if (!store[dest.n]) store[dest.n] = { tipo: "ganadero" };
+        if (!store[dest.n].pastoreo) store[dest.n].pastoreo = {};
+        store[dest.n].pastoreo[e] = Object.assign({}, store[dest.n].pastoreo[e] || {}, over);
+      });
+      saveStore(store);
+      return n;
+    }
+    function refrescarTableroCarga(scroll) {
+      try { pintarTresSit(); } catch (e) {}
+      if (!scroll) return;
+      const col = document.getElementById("tresSit");
+      const cuerpo = col && col.closest("#dropManejo .cuerpo");
+      if (cuerpo && col) {
+        try { cuerpo.scrollTop = Math.max(0, col.offsetTop - 8); } catch (e) {}
+      } else if (col) {
+        try { col.scrollIntoView({ block: "start", inline: "nearest" }); } catch (e2) {}
+      }
+    }
     function nomN(n, esp) {
       return n + " " + (Math.abs(Number(n)) === 1 ? esp.nombre : esp.plural);
     }
@@ -1105,12 +1212,11 @@
       }
       const p = potreros.find((x) => x.n === pSel) || potreros[0];
       const esp = especieAct();
-      el.innerHTML = "<p class='tres-sit-nota'>Año completo · invierno limita.</p>" +
+      el.innerHTML = "<p class='tres-sit-nota'>Año completo · todo el campo · invierno limita.</p>" +
         ["actual", "m1", "optimo"].map((esc) => {
-        const d = datoEscena(p, esc);
         const cal = calendarioCarga(p, esc);
         const cab = cal.cab;
-        const vacio = esc !== "actual" && d._sinCarga;
+        const vacio = esc !== "actual" && !productorCargoEsc(esc);
         const linea = cal.bajar > 0
           ? "<span class='bajar'>bajar " + cal.bajar + "</span>"
           : "<span class='subir'>subir " + cal.subir + "</span>";
@@ -1141,14 +1247,11 @@
       ];
     }
     function calendarioCarga(p, esc) {
-      const tipo = (store[p.n] && store[p.n].tipo) || "ganadero";
+      p = p || potreros[0] || { ha: haTotal() || 1, dist: null, n: 1 };
       const ot = otbnAct();
       const esp = especieAct();
-      const d = datoEscena(p, esc);
-      const dAct = datoEscena(p, "actual");
-      const cab = nAnimales((esc !== "actual" && d._sinCarga)
-        ? (dAct.cabezas != null ? dAct.cabezas : 0)
-        : (d.cabezas != null ? d.cabezas : 0));
+      const ha = Math.max(haTotal() || p.ha || 0.1, 0.1);
+      const cab = cabezasTablero(esc);
       const mej = extraMejoras(esc === "m1" ? "m1" : "actual");
       const rue = rueForraje();
       const L = store.lluvia || {};
@@ -1157,31 +1260,31 @@
         || Math.round((Number(L.anual) || 400) * rue * (ot.fo || 1));
       const fMej = esc === "m1" ? (mej.f || 1) : 1;
       const kgAnio = Math.round(kgAnio0 * fMej);
-      const extraInvHa = (esc === "m1" ? (mej.kg || 0) : 0) / Math.max(p.ha, 0.1);
+      const extraInvHa = (esc === "m1" ? (mej.kg || 0) : 0) / ha;
       const meses = mesesForraje();
       const sumW = meses.reduce((s, m) => s + m.w, 0);
       const ev = esp.evPorCabeza || 1;
-      const tAct = techoEscena(p, tipo, "actual");
-      const tM1 = techoEscena(p, tipo, "m1");
-      const tOp = techoEscena(p, tipo, "optimo");
+      const tActN = techoCampo("actual");
+      const tM1N = techoCampo("m1");
+      const tOpN = techoCampo("optimo");
       const kgRef = 400 * rue * (ot.fo || 1);
-      const util = (kgRef > 0 && p.ha > 0)
-        ? (tAct.cabezasMax * 12 * 365 * ev) / (kgRef * p.ha)
+      const util = (kgRef > 0 && ha > 0)
+        ? (tActN * 12 * 365 * ev) / (kgRef * ha)
         : 0.28;
-      let cubreForraje = (kgAnio0 * util * p.ha) / (12 * 365 * ev);
+      let cubreForraje = (kgAnio0 * util * ha) / (12 * 365 * ev);
       if (esc === "m1") cubreForraje *= fMej;
       cubreForraje = nAnimales(cubreForraje);
       const extraCab = nAnimales((esc === "m1" ? (mej.kg || 0) : 0) / (365 * 12 * ev));
-      const topeIni = Math.min(cubreForraje, nAnimales(tAct.cabezasMax));
-      const topeM1 = Math.min(Math.max(cubreForraje, 0) + extraCab, nAnimales(tM1.cabezasMax * fMej + extraCab));
-      const topeOp = Math.min(cubreForraje + extraCab, nAnimales(tOp.cabezasMax));
-      const topePaso = esc === "optimo" ? topeOp : (esc === "m1" ? topeM1 : Math.min(cubreForraje, nAnimales(tM1.cabezasMax)));
+      const topeIni = Math.min(cubreForraje, tActN);
+      const topeM1 = Math.min(Math.max(cubreForraje, 0) + extraCab, nAnimales(tM1N * fMej + extraCab));
+      const topeOp = Math.min(cubreForraje + extraCab, tOpN);
+      const topePaso = esc === "optimo" ? topeOp : (esc === "m1" ? topeM1 : Math.min(cubreForraje, tM1N));
       const cubreAnio = topePaso;
       const filas = meses.map((m) => {
         let oferta = kgAnio * (m.w / sumW);
         if (m.est === "invierno") oferta += extraInvHa / 3;
-        const demanda = cab > 0 ? (cab * ev * 12 * m.d) / p.ha : 0;
-        const cubre = ev > 0 ? nAnimales((oferta * p.ha) / (12 * m.d * ev)) : 0;
+        const demanda = cab > 0 ? (cab * ev * 12 * m.d) / ha : 0;
+        const cubre = ev > 0 ? nAnimales((oferta * ha) / (12 * m.d * ev)) : 0;
         const deficit = demanda > oferta * 1.05 && cab > 0;
         return {
           nom: m.nom, est: m.est, d: m.d, oferta: +oferta.toFixed(0), demanda: +demanda.toFixed(0),
@@ -1194,7 +1297,7 @@
       return {
         cab: cab, kgAnio: kgAnio, filas: filas, cubreAnio: cubreAnio,
         topeSuelo: topeOp, topePaso: topePaso, topeM1: topeM1, topeIni: topeIni, topeOp: topeOp,
-        subir: subir, bajar: bajar, esp: esp, ot: ot, n: potreros.length, dist: p.dist, ha: p.ha,
+        subir: subir, bajar: bajar, esp: esp, ot: ot, n: potreros.length, dist: p.dist, ha: ha,
         mm: Math.round(Number(L.anual) || 0), anioTxt: anioTxt, mej: mej, sit: sitioDe(p)
       };
     }
@@ -1230,7 +1333,7 @@
       return acc.slice(0, 6);
     }
     function svgCalendario(cal) {
-      const W = 240, H = 108, l = 2, r = 2, t = 8, b = 18;
+      const W = 240, H = 124, l = 2, r = 2, t = 8, b = 18;
       const inner = W - l - r;
       const slot = inner / 12;
       const maxV = Math.max(1, ...cal.filas.map((f) => Math.max(f.oferta, f.demanda)));
@@ -1271,9 +1374,8 @@
           (((cal.bajar || cal.subir) === 1) ? cal.esp.nombre : cal.esp.plural) + "</span>" +
         "</div>" +
         svgCalendario(cal) +
-        "<p class='diag-ley'>Verde = pasto del mes (" + (cal.mm ? cal.mm + " mm · " : "") + cal.anioTxt +
-          "). Oro = lo que comen. Rojo = hay que actuar. Tope de este paso " + cal.topePaso +
-          " · Ideal " + cal.topeOp + " " + cal.esp.plural + ".</p>" +
+        "<p class='diag-ley'>Verde pasto · oro come · rojo actuar" +
+          (cal.mm ? " · " + cal.mm + " mm" : "") + " · " + cal.anioTxt + ".</p>" +
         "<ul class='diag-acc'>" + acc.map((a) =>
           "<li class='" + (a.ok ? "ok-ano" : "") + "'>" + a.t + "</li>"
         ).join("") + "</ul>";
@@ -1357,6 +1459,7 @@
     }
     let zmin = 917, zmax = 1023;
     const store = loadStore();
+    if (nAnimales(store.cabezas) > 0) store.cargoCabezas = true;
     if (!store.nombreCampo || /500\s*ha|demostrativo|Campo gemelo ·/i.test(store.nombreCampo)) {
       store.nombreCampo = esMovil() ? "" : DEMO_NOMBRE;
     }
@@ -1804,15 +1907,16 @@
       if (der.maxDias) html += " Ocupación de invierno: " + der.maxDias + " días.";
       el.innerHTML = html;
     }
-    function flashActualizar(btn, aviso, texto) {
+    function flashActualizar(btn, aviso, texto, etiqueta) {
+      const lab = etiqueta || "Actualizar este dato";
       if (btn) {
         btn.classList.add("ok");
-        btn.innerHTML = '<span class="punto"></span> Dato actualizado';
+        btn.innerHTML = '<span class="punto"></span> ' + (texto && texto.indexOf("Guardado") === 0 ? "Manejo guardado" : "Dato actualizado");
         clearTimeout(btn._tFlash);
         btn._tFlash = setTimeout(() => {
           btn.classList.remove("ok");
-          btn.innerHTML = '<span class="punto"></span> Actualizar este dato';
-        }, 2200);
+          btn.innerHTML = '<span class="punto"></span> ' + lab;
+        }, 2600);
       }
       if (aviso) {
         aviso.hidden = false;
@@ -1822,14 +1926,51 @@
     function marcarDatoActualizado(chequeo) {
       const b = document.getElementById("btnActualizarManejo");
       const a = document.getElementById("avisoManejo");
+      if (a) a.classList.remove("visto");
       flashActualizar(b, a, chequeo && !chequeo.posible
         ? ("Actualizado en " + nomEscena(escSel) + " · año completo. " + (chequeo.motivos[0] || "Revise el límite."))
-        : ("Actualizado en " + nomEscena(escSel) + " · año completo (el invierno limita)."));
+        : ("Actualizado en " + nomEscena(escSel) + " · año completo (el invierno limita)."),
+        "Actualizar este dato");
       const col = document.querySelector(".sit-col.on");
       if (col) {
         col.classList.add("flash");
         setTimeout(() => col.classList.remove("flash"), 1600);
       }
+    }
+    function marcarManejoGuardado(chequeo) {
+      const b = document.getElementById("btnGuardar");
+      const a = document.getElementById("avisoManejo");
+      const esp = especieAct();
+      const n = nAnimales(store.cabezas);
+      const txt = chequeo && !chequeo.posible
+        ? ("Guardado en " + nomEscena(escSel) + ": " + n + " " + esp.plural + ". Semáforo rojo. " + (chequeo.motivos[0] || ""))
+        : ("Guardado en " + nomEscena(escSel) + ": " + (n ? (n + " " + esp.plural) : "el manejo") + ".");
+      if (b) {
+        b.classList.add("ok", "punto-act");
+        b.innerHTML = '<span class="punto"></span> Manejo guardado';
+        clearTimeout(b._tFlash);
+        b._tFlash = setTimeout(() => {
+          b.classList.remove("ok");
+          b.innerHTML = '<span class="punto"></span> Guardar este manejo';
+        }, 2800);
+      }
+      if (a) {
+        a.hidden = false;
+        a.classList.add("visto");
+        a.textContent = txt;
+      }
+      document.querySelectorAll("#tresSit .sit-col").forEach((col) => {
+        col.classList.add("flash");
+        setTimeout(() => col.classList.remove("flash"), 1800);
+      });
+      const sat = document.getElementById("avisoSat");
+      if (sat) {
+        sat.hidden = false;
+        sat.textContent = txt;
+        clearTimeout(sat._tFlash);
+        sat._tFlash = setTimeout(() => { sat.hidden = true; }, 2800);
+      }
+      try { b && b.scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
     }
     function diasDeCarga(p, extra) {
       const d = extra || {};
@@ -1954,11 +2095,7 @@
       const esp = especieAct();
       const p = potreros.find((x) => x.n === pSel) || potreros[0];
       const d = p ? datoEscena(p, "actual") : null;
-      const cabEl = document.getElementById("fCabezas");
-      const cargoCab = (cabEl && cabEl.value !== "") || (store.cabezas != null && store.cabezas !== "");
-      const cab = cargoCab
-        ? nAnimales((cabEl && cabEl.value !== "") ? cabEl.value : store.cabezas)
-        : (d ? nAnimales(d.cabezas) : 0);
+      const cab = cabezasTablero("actual") || (d ? nAnimales(d.cabezas) : 0);
       const ot = otbnAct();
       const otFrase = {
         I: "bosque de máxima protección: se pastorea con más descanso, no se desmonta",
@@ -3275,18 +3412,17 @@
     }
     function aplicarCabezasMenu() {
       const el = document.getElementById("fCabezas");
-      const n = el && el.value !== "" ? nAnimales(el.value) : nAnimales(store.cabezas);
+      const hayCampo = el && el.value !== "";
+      const n = hayCampo ? nAnimales(el.value) : nAnimales(store.cabezas);
       if (!Number.isFinite(n) || n < 0) return;
-      store.cabezas = n;
-      if (el) el.value = n;
+      if (!hayCampo && !(store.cargoCabezas && n > 0)) return;
+      setCabezasCampo(n, "actual");
       const p = potreros[0];
-      if (!p) return;
-      const esp = especieAct();
-      const over = {
-        cabezas: n,
-        ev: +(n * (esp.evPorCabeza || 1)).toFixed(2),
-        _sinCarga: false
-      };
+      if (!p) {
+        refrescarTableroCarga();
+        return;
+      }
+      const over = Object.assign({}, (store[p.n].pastoreo && store[p.n].pastoreo.actual) || {}, { cabezas: n });
       const der = typeof diasDeCarga === "function" ? diasDeCarga(p, over) : null;
       if (der) {
         over.diasRestan = der.maxDias;
@@ -3294,12 +3430,11 @@
         over.haUnidad = der.haUnidad;
         over.haEV = der.haEV;
         over.diasOrigen = "equilibrio";
+        store[p.n].pastoreo.actual = Object.assign({}, store[p.n].pastoreo.actual || {}, over);
+        saveStore(store);
       }
-      if (!store[p.n]) store[p.n] = { tipo: "ganadero" };
-      if (!store[p.n].pastoreo) store[p.n].pastoreo = {};
-      store[p.n].pastoreo.actual = Object.assign({}, store[p.n].pastoreo.actual || {}, over);
-      saveStore(store);
       try { pintarCifrasVivas(p, over); pintarEquilibrio(); } catch (e) {}
+      refrescarTableroCarga();
     }
     function armarAguadas(south, west, north, east) {
       const H = north - south, W = east - west;
@@ -3829,7 +3964,7 @@
         flashActualizar(btn, av, n
           ? (n + " " + especieAct().plural + " actualizadas.")
           : "Tipo de hacienda actualizado.");
-        try { pintarCifrasActuales(); } catch (e) {}
+        try { pintarCifrasActuales(); refrescarTableroCarga(true); } catch (e) {}
       }
     }
     const cajaCampoEl = document.getElementById("cajaCampo");
@@ -4245,7 +4380,11 @@
       document.getElementById("fLote").value = d.lote;
       document.getElementById("fAccion").value = v.accion;
       const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
-      const cabezas = nAnimales(d.cabezas != null ? d.cabezas : Number(d.ev || 0) / (esp.evPorCabeza || 1));
+      const cabezasEst = nAnimales(d.cabezas != null ? d.cabezas : Number(d.ev || 0) / (esp.evPorCabeza || 1));
+      const nProd = (escSel === "actual" && store.cargoCabezas)
+        ? nAnimales(store.cabezas)
+        : nAnimales(cabezasTablero(escSel));
+      const cabezas = nProd > 0 ? nProd : cabezasEst;
       const der = diasDeCarga(p, Object.assign({}, d, { cabezas: cabezas, _esc: escSel }));
       const haUn = der.haUnidad || (d.haUnidad != null ? Number(d.haUnidad) : Number(d.haEV || 0) * (esp.evPorCabeza || 1));
       const aguaL = d.aguaL != null ? Number(d.aguaL) : esp.aguaL;
@@ -4287,8 +4426,13 @@
       document.querySelectorAll("#campos input, #fLote, #fAccion").forEach((el) => {
         el.readOnly = !!(derivado[el.id] || (escSel === "actual" && lockInta[el.id]));
       });
-      document.getElementById("btnGuardar").disabled = false;
-      document.getElementById("btnGuardar").textContent = "Guardar este manejo";
+      const btnG = document.getElementById("btnGuardar");
+      if (btnG) {
+        btnG.disabled = false;
+        if (!btnG.classList.contains("ok")) {
+          btnG.innerHTML = '<span class="punto"></span> Guardar este manejo';
+        }
+      }
       pintarMejorasUI();
       pintarTopeMejora(p, d);
       const info = document.getElementById("infoLote");
@@ -4445,13 +4589,29 @@
       }
       if (dias && dias.value !== "" && over.diasRestan == null) over.diasRestan = Number(dias.value);
       if (desc && desc.value !== "" && over.diasDescanso == null) over.diasDescanso = Number(desc.value);
+      if (id === "fEv" && evEl && evEl.value !== "") {
+        if (escSel === "actual") {
+          store.cabezas = nAnimales(evEl.value);
+          store.cargoCabezas = true;
+        }
+        persistirVivo(p, over);
+        refrescarTableroCarga();
+      }
       if (al && ar && evEl) ar.value = Math.round(Number(evEl.value || 0) * Number(al.value || esp.aguaL));
     });
     campos.addEventListener("change", (ev) => {
       if (!ev.target || ev.target.id !== "fEv") return;
       ev.target.value = nAnimales(ev.target.value);
+      const p = potreros.find((x) => x.n === pSel);
+      const n = nAnimales(ev.target.value);
+      if (escSel === "actual") {
+        store.cabezas = n;
+        store.cargoCabezas = true;
+      }
+      if (p) persistirVivo(p, { cabezas: n, ev: +(n * (especieAct().evPorCabeza || 1)).toFixed(2), _sinCarga: false });
+      refrescarTableroCarga();
     });
-    function aplicarCargaManejo() {
+    function aplicarCargaManejo(opts) {
       const p = potreros.find((x) => x.n === pSel) || potreros[0];
       if (!p) return;
       const tipoEl = document.getElementById("fTipo");
@@ -4485,11 +4645,18 @@
       put("fKg", "kg", true);
       put("fAccion", "accion", false);
       const elEv = document.getElementById("fEv");
-      if (elEv) {
-        carga.cabezas = nAnimales(elEv.value || 0);
-        carga.ev = +(carga.cabezas * (esp.evPorCabeza || 1)).toFixed(2);
-        elEv.value = carga.cabezas;
+      const nEv = elEv && elEv.value !== "" ? nAnimales(elEv.value) : null;
+      const nStore = store.cargoCabezas ? nAnimales(store.cabezas) : null;
+      const techoAct = techoCampo(escSel === "optimo" ? "optimo" : (escSel === "m1" ? "m1" : "actual"));
+      let nCab = nEv != null ? nEv : (nStore || 0);
+      if (store.cargoCabezas && nStore > 0 && nEv != null && nEv === nAnimales(techoAct) && nStore !== nEv) {
+        nCab = nStore;
       }
+      carga.cabezas = nCab;
+      carga.ev = +(carga.cabezas * (esp.evPorCabeza || 1)).toFixed(2);
+      carga._sinCarga = false;
+      if (elEv) elEv.value = carga.cabezas;
+      setCabezasCampo(carga.cabezas, escSel);
       const elHa = document.getElementById("fHaEv");
       if (elHa && elHa.value !== "") {
         carga.haUnidad = Number(elHa.value);
@@ -4511,7 +4678,7 @@
       pintarEquilibrio(p, Object.assign({}, carga, { _esc: escSel }));
       pintarCifrasVivas(p, Object.assign({}, carga, { _esc: escSel }));
       pintarCifrasActuales();
-      pintarTresSit();
+      refrescarTableroCarga(true);
       pintarCartelCampo();
       pintarTopeMejora(p, carga);
       try { potreros.forEach(pintar); } catch (e) {}
@@ -4523,10 +4690,22 @@
           ? ("Dato cargado en " + nomEscena(escSel) + ".")
           : ("Cargado en " + nomEscena(escSel) + ", pero semáforo rojo. " + (chequeo.motivos[0] || ""));
       }
-      marcarDatoActualizado(chequeo);
+      if (!(opts && opts.silencio)) marcarDatoActualizado(chequeo);
       return chequeo;
     }
     document.getElementById("btnActualizarManejo").addEventListener("click", () => aplicarCargaManejo());
+    const elCabLive = document.getElementById("fCabezas");
+    if (elCabLive) {
+      elCabLive.addEventListener("input", () => {
+        if (elCabLive.value !== "") {
+          store.cabezas = nAnimales(elCabLive.value);
+          store.cargoCabezas = true;
+          const elEv = document.getElementById("fEv");
+          if (elEv && escSel === "actual" && document.activeElement !== elEv) elEv.value = store.cabezas;
+        }
+        refrescarTableroCarga();
+      });
+    }
     ["mejLotes", "mejAgua", "mejSiembra"].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -4538,16 +4717,20 @@
       });
     });
     document.getElementById("btnGuardar").addEventListener("click", () => {
-      const chequeo = aplicarCargaManejo();
+      const chequeo = aplicarCargaManejo({ silencio: true });
+      const nOk = store.cargoCabezas ? nAnimales(store.cabezas) : 0;
       const p = potreros.find((x) => x.n === pSel);
-      const esp = especieAct();
-      const msg = document.getElementById("msg");
-      if (msg && chequeo) {
-        msg.textContent = chequeo.posible
-          ? "Guardado lo que van mejorando. Sigue por debajo del techo INTA para " + esp.plural + "."
-          : "Guardado, pero no es posible: semáforo rojo. " + chequeo.motivos[0];
+      if (p) {
+        potreros.forEach(pintar);
+        llenar();
+        if (nOk > 0) {
+          setCabezasCampo(nOk, escSel === "actual" ? "actual" : escSel);
+          const elEv = document.getElementById("fEv");
+          if (elEv) elEv.value = nOk;
+        }
+        refrescarTableroCarga(true);
       }
-      if (p) refrescarMapa();
+      marcarManejoGuardado(chequeo);
     });
 
     function kmlColor(hex) {
