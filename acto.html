@@ -167,7 +167,8 @@
     }
     nav.ctrl {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 10;
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px;
       padding: 10px 22px 14px; font-family: system-ui, sans-serif;
       background: #062414;
     }
@@ -177,6 +178,7 @@
       background: rgba(247,241,228,.35); cursor: pointer;
     }
     .puntos button.on { background: var(--oro); width: 26px; border-radius: 8px; }
+    .flechas { display: flex; gap: 10px; }
     .flechas button {
       border: 1px solid var(--oro); background: transparent; color: var(--crema);
       border-radius: 8px; padding: 10px 14px; font-weight: 800;
@@ -304,11 +306,11 @@
     </section>
   </div>
   <nav class="ctrl">
+    <div class="puntos" id="puntos"></div>
     <div class="flechas">
       <button type="button" id="prev" aria-label="Anterior">←</button>
       <button type="button" id="next" aria-label="Siguiente">→</button>
     </div>
-    <div class="puntos" id="puntos"></div>
   </nav>
   <script>
     const escenas = [...document.querySelectorAll(".escena")];
