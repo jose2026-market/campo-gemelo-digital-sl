@@ -139,10 +139,13 @@
     .carta.on .preg { display: none; }
     .carta.on .num { display: block; }
     .cierre {
-      display: grid; grid-template-columns: minmax(0, 1fr) auto;
-      gap: 36px; align-items: center; margin: auto 0; width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+      gap: 28px 40px; align-items: center; margin: auto 0; width: 100%; min-height: 0;
     }
-    .cierre .texto { max-width: 18ch; }
+    .cierre .texto { min-width: 0; }
+    .cierre h1 { font-size: clamp(36px, 5.2vw, 60px); }
+    .cierre .bajada { max-width: 28ch; }
     .cta {
       display: inline-block; margin-top: 18px; background: var(--oro); color: var(--verde-oscuro);
       font-weight: 800; text-decoration: none; border-radius: 12px; padding: 16px 22px; font-size: 18px;
@@ -152,27 +155,19 @@
       color: var(--oro-claro); font-weight: 800; word-break: break-all;
     }
     .qr-card {
+      justify-self: end; max-width: 100%;
       background: var(--crema); color: var(--tierra); border-radius: 22px;
       padding: 16px 16px 14px; text-align: center;
       box-shadow: 0 10px 32px rgba(0,0,0,.28);
       font-family: system-ui, Segoe UI, sans-serif;
     }
-    .qr-card img { display: block; width: min(52vh, 420px); height: auto; border-radius: 8px; }
+    .qr-card img { display: block; width: 100%; max-width: 260px; height: auto; border-radius: 8px; margin: 0 auto; }
     .qr-card b {
       display: block; margin-top: 10px; font-size: 18px; font-weight: 800; color: var(--verde);
     }
     .qr-card span {
       display: block; margin-top: 4px; font-size: 13px; font-weight: 700; color: #5C564F; max-width: 28ch; margin-left: auto; margin-right: auto;
     }
-    .qr-vivo {
-      position: absolute; right: 18px; bottom: 72px; z-index: 6;
-      width: 188px; padding: 10px 10px 8px;
-      transition: opacity .25s ease, transform .25s ease;
-    }
-    .qr-vivo img { width: 100%; height: auto; border-radius: 6px; }
-    .qr-vivo b { font-size: 12px; margin-top: 6px; letter-spacing: .04em; text-transform: uppercase; }
-    .qr-vivo span { font-size: 11px; max-width: none; }
-    body.cierre-on .qr-vivo { opacity: 0; pointer-events: none; transform: scale(.92); }
     nav.ctrl {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
       display: flex; align-items: center; justify-content: space-between;
@@ -202,18 +197,13 @@
       .apertura .copy { padding: 0 18px 88px; }
       h1 { font-size: 34px; }
       .cierre { grid-template-columns: 1fr; }
-      .qr-vivo { width: 112px; right: 10px; bottom: 80px; }
-      .qr-card img { width: min(46vw, 240px); margin: 0 auto; }
+      .qr-card { justify-self: center; }
+      .qr-card img { max-width: 240px; }
     }
   </style>
 </head>
 <body>
   <button type="button" class="fs" id="btnFs">Pantalla completa (F)</button>
-  <a class="qr-card qr-vivo" href="https://jose2026-market.github.io/campo-gemelo-digital-sl/" target="_blank" rel="noopener">
-    <img src="assets/qr-campo-gemelo-digital-sl.png" alt="QR para probar el gemelo en el celular" width="148" height="148" />
-    <b>Pruebe ahora</b>
-    <span>Cámara del celular</span>
-  </a>
   <div id="show">
     <section class="escena apertura on" data-n="0">
       <img class="foto" src="assets/srsl-vaca-ternero-2026.png" alt="Hereford con ternero · Sociedad Rural de San Luis" />
@@ -225,7 +215,7 @@
         </header>
         <h1>Campo Gemelo Digital SL</h1>
         <p class="bajada">Su lote en el satélite. Para decidir carga, pasto y agua. Sin desmonte y sin recortar la bebida.</p>
-        <p class="hint">Toque o flecha → · Un productor elige la carga · El QR abre el gemelo en el celular</p>
+        <p class="hint">Toque o flecha → · Un productor del salón va a elegir la carga</p>
       </div>
     </section>
 
@@ -343,7 +333,6 @@
       i = (n + escenas.length) % escenas.length;
       escenas.forEach((s, k) => s.classList.toggle("on", k === i));
       [...puntos.children].forEach((b, k) => b.classList.toggle("on", k === i));
-      document.body.classList.toggle("cierre-on", i === 4);
       if (i === 2) dibujar();
     }
     function setVacas(n) {
