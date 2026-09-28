@@ -140,39 +140,36 @@
     .carta.on .num { display: block; }
     .cierre {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
-      gap: 28px 40px; align-items: center; margin: auto 0; width: 100%; min-height: 0;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+      gap: 20px 36px; align-items: center; margin: auto 0; width: 100%;
+      flex: 1; min-height: 0; overflow: hidden;
     }
     .cierre .texto { min-width: 0; }
     .cierre h1 { font-size: clamp(36px, 5.2vw, 60px); }
     .cierre .bajada { max-width: 28ch; }
-    .cta {
-      display: inline-block; margin-top: 18px; background: var(--oro); color: var(--verde-oscuro);
-      font-weight: 800; text-decoration: none; border-radius: 12px; padding: 16px 22px; font-size: 18px;
-    }
     .url {
-      margin-top: 14px; font-family: system-ui, sans-serif; font-size: clamp(16px, 2.2vw, 22px);
-      color: var(--oro-claro); font-weight: 800; word-break: break-all;
+      margin-top: 8px; font-family: system-ui, sans-serif; font-size: 13px;
+      color: #5C564F; font-weight: 800; word-break: break-all;
     }
     .qr-card {
-      justify-self: end; max-width: 100%;
+      justify-self: end; align-self: center; max-width: 100%;
       background: var(--crema); color: var(--tierra); border-radius: 22px;
-      padding: 16px 16px 14px; text-align: center;
+      padding: 14px 14px 12px; text-align: center;
       box-shadow: 0 10px 32px rgba(0,0,0,.28);
       font-family: system-ui, Segoe UI, sans-serif;
     }
-    .qr-card img { display: block; width: 100%; max-width: 260px; height: auto; border-radius: 8px; margin: 0 auto; }
+    .qr-card img { display: block; width: 100%; max-width: 220px; max-height: min(34vh, 220px); height: auto; border-radius: 8px; margin: 0 auto; }
     .qr-card b {
-      display: block; margin-top: 10px; font-size: 18px; font-weight: 800; color: var(--verde);
+      display: block; margin-top: 8px; font-size: 16px; font-weight: 800; color: var(--verde);
     }
     .qr-card span {
-      display: block; margin-top: 4px; font-size: 13px; font-weight: 700; color: #5C564F; max-width: 28ch; margin-left: auto; margin-right: auto;
+      display: block; margin-top: 4px; font-size: 12px; font-weight: 700; color: #5C564F; max-width: 26ch; margin-left: auto; margin-right: auto;
     }
     nav.ctrl {
-      position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 10;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 28px 16px; font-family: system-ui, sans-serif;
-      background: linear-gradient(transparent, rgba(0,0,0,.35));
+      padding: 10px 22px 14px; font-family: system-ui, sans-serif;
+      background: #062414;
     }
     .puntos { display: flex; gap: 8px; }
     .puntos button {
@@ -198,7 +195,7 @@
       h1 { font-size: 34px; }
       .cierre { grid-template-columns: 1fr; }
       .qr-card { justify-self: center; }
-      .qr-card img { max-width: 240px; }
+      .qr-card img { max-width: 180px; max-height: 160px; }
     }
   </style>
 </head>
@@ -295,25 +292,23 @@
         <div class="texto">
           <h1>Ahora el suyo.</h1>
           <p class="bajada">Escanee y pruébelo en el celular. En el stand: las 4 esquinas del plano, las aguadas y la hacienda.</p>
-          <a class="cta" href="https://jose2026-market.github.io/campo-gemelo-digital-sl/" target="_blank" rel="noopener">Abrir el gemelo</a>
-          <p class="url">jose2026-market.github.io/campo-gemelo-digital-sl</p>
           <p class="hint">No se recorta el agua de bebida. No se desmonta. No es soja.</p>
         </div>
         <a class="qr-card" href="https://jose2026-market.github.io/campo-gemelo-digital-sl/" target="_blank" rel="noopener">
-          <img src="assets/qr-campo-gemelo-digital-sl.png" alt="QR Campo Gemelo Digital SL" width="360" height="360" />
+          <img src="assets/qr-campo-gemelo-digital-sl.png" alt="QR Campo Gemelo Digital SL" width="220" height="220" />
           <b>Pruebe ahora en el celular</b>
-          <span>Apunte la cámara. Abre el gemelo, no hace falta instalar nada.</span>
+          <span>Apunte la cámara. No hace falta instalar nada.</span>
+          <p class="url">jose2026-market.github.io/campo-gemelo-digital-sl</p>
         </a>
       </div>
     </section>
   </div>
   <nav class="ctrl">
-    <a class="sec" href="presentacion.html">Versión corta (4 diapositivas)</a>
-    <div class="puntos" id="puntos"></div>
     <div class="flechas">
       <button type="button" id="prev" aria-label="Anterior">←</button>
       <button type="button" id="next" aria-label="Siguiente">→</button>
     </div>
+    <div class="puntos" id="puntos"></div>
   </nav>
   <script>
     const escenas = [...document.querySelectorAll(".escena")];
