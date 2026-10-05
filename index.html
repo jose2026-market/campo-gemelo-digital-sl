@@ -423,15 +423,6 @@
       background: var(--crema); border-radius: 50%;
       position: relative; z-index: 2;
     }
-    .marca-obs {
-      display: flex; align-items: center; gap: 8px;
-      z-index: 2; flex-shrink: 1; min-width: 0; max-width: 42%;
-    }
-    .marca-obs-txt {
-      color: var(--crema); font-size: 13px; font-weight: 700;
-      line-height: 1.2; letter-spacing: .01em;
-    }
-    .obs-short { display: none; }
     .topbar .who {
       position: absolute; left: 50%; top: calc(50% + env(safe-area-inset-top, 0px) / 2);
       transform: translate(-50%, -50%);
@@ -686,14 +677,7 @@
         padding: env(safe-area-inset-top, 0px) 6px 0;
         height: calc(var(--topbar-h) + env(safe-area-inset-top, 0px));
       }
-      .topbar .logo { height: 34px; width: 34px; }
-      .marca-obs {
-        justify-self: start; max-width: 100%; min-width: 0;
-        flex: none; gap: 4px; overflow: hidden;
-      }
-      .obs-full { display: none; }
-      .obs-short { display: inline; }
-      .marca-obs-txt { font-size: 9px; line-height: 1.1; white-space: nowrap; }
+      .topbar .logo { height: 34px; width: 34px; justify-self: start; }
       .topbar-end { justify-self: end; margin-left: 0; }
       .topbar .who {
         position: static; left: auto; top: auto; transform: none;
@@ -709,16 +693,12 @@
 <body class="vista-inicio">
 <div class="app">
   <header class="topbar">
-    <div class="marca-obs" aria-label="Observatorio de IA de la UCCuyo">
-      <img class="logo" src="assets/logo-observatorio-ia.png" alt="" />
-      <span class="marca-obs-txt"><span class="obs-full">Observatorio de IA<br>de la UCCuyo</span><span class="obs-short">OIA</span></span>
-    </div>
+    <img class="logo" src="assets/logo-sociedad-rural-san-luis.png?v=oficial" alt="Sociedad Rural de San Luis" />
     <div class="who">
       <small>Sociedad Rural de San Luis</small>
       <b>Campo Gemelo Digital SL</b>
     </div>
     <div class="topbar-end">
-      <img class="logo" src="assets/logo-sociedad-rural-san-luis.png?v=oficial" alt="Sociedad Rural de San Luis" />
       <nav class="desk" aria-label="Servicios">
         <button type="button" class="on" data-vista="inicio">Inicio</button>
         <button type="button" data-vista="visor">Mapa</button>
@@ -4909,7 +4889,7 @@
       }).join("");
       document.getElementById("cuerpoInforme").innerHTML =
         "<h1>Informe al productor</h1>" +
-        "<p class='meta'>Sociedad Rural de San Luis · Gemelo Digital Ganadero · Observatorio de IA UCCuyo<br>" +
+        "<p class='meta'>Sociedad Rural de San Luis · Gemelo Digital Ganadero<br>" +
         escHtml(campo) + (prod ? " · " + escHtml(prod) : "") +
         (propietario ? " · contacto: " + escHtml(propietario) : "") +
         (tel ? " · " + escHtml(tel) : "") + "<br>" +
