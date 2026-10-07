@@ -539,6 +539,36 @@
     }
     .nav-bajo button { flex: 1; border: 0; background: none; color: #5C564F; font-weight: 700; font-size: 11px; padding: 8px 4px; border-radius: 8px; }
     .nav-bajo button.on { color: var(--verde); background: var(--verde-suave); }
+    .bienvenida {
+      position: fixed; inset: 0; z-index: 4000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+      background: rgba(8, 58, 28, .78);
+      box-sizing: border-box;
+    }
+    .bienvenida[hidden] { display: none !important; }
+    .bienvenida-card {
+      width: min(360px, 100%);
+      background: var(--crema); color: var(--tierra);
+      border: 1px solid var(--oro); border-radius: 16px;
+      padding: 22px 20px 18px; text-align: center;
+      box-shadow: 0 12px 36px rgba(0,0,0,.32);
+    }
+    .bienvenida-card img {
+      width: 72px; height: 72px; object-fit: contain;
+      display: block; margin: 0 auto 12px;
+    }
+    .bienvenida-card p {
+      margin: 0 0 10px; font-size: 16px; line-height: 1.35;
+      font-weight: 650; color: var(--verde-oscuro);
+    }
+    .bienvenida-card p.gracias {
+      font-size: 20px; font-weight: 800; color: var(--verde); margin: 0 0 16px;
+    }
+    .bienvenida-card button {
+      width: 100%; border: 1px solid var(--verde); background: var(--verde);
+      color: #fff; border-radius: 8px; font-weight: 800; font-size: 15px; padding: 12px 14px;
+    }
     body.vista-inicio .btn-menu, body.vista-informe .btn-menu { display: none; }
     body.vista-visor .bar { padding-top: calc(var(--topbar-h) + 14px + env(safe-area-inset-top, 0px)); }
     body.vista-inicio .mapa-wrap { pointer-events: none; }
@@ -559,7 +589,7 @@
       .nav-bajo { display: none; }
     }
     @media print {
-      .topbar, .nav-bajo, .btn-menu, .bar, .velo, .mapa-wrap, .inicio, .informe-acciones { display: none !important; }
+      .topbar, .nav-bajo, .btn-menu, .bar, .velo, .bienvenida, .mapa-wrap, .inicio, .informe-acciones { display: none !important; }
       .informe { position: static; padding: 0; background: #fff; display: block !important; }
       .informe .papel { border: 0; }
     }
@@ -728,6 +758,14 @@
 </head>
 <body class="vista-inicio">
 <div class="app">
+  <div id="bienvenidaSrsl" class="bienvenida" hidden>
+    <div class="bienvenida-card" role="dialog" aria-labelledby="titBienvenida" aria-modal="true">
+      <img src="assets/logo-sociedad-rural-san-luis.png?v=oficial" alt="Sociedad Rural de San Luis" />
+      <p id="titBienvenida">La Sociedad Rural está trabajando para brindarte información.</p>
+      <p class="gracias">Gracias por entrar.</p>
+      <button type="button" id="btnBienvenida">Entrar al campo</button>
+    </div>
+  </div>
   <header class="topbar">
     <img class="logo" src="assets/logo-sociedad-rural-san-luis.png?v=oficial" alt="Sociedad Rural de San Luis" />
     <div class="who">
@@ -3736,7 +3774,7 @@
         "<div><b>" + Math.round(mmF) + " mm</b><span>7 que vienen · azul</span></div></div>" +
         "<div class='graf'>" + g +
         "<div class='heladas " + helCls + "'><small>Heladas</small><b>" + helTit + "</b><span>" + helSub + "</span></div></div>" +
-        "<p class='fuente'>Open-Meteo · este lote, no un pluviómetro.</p>";
+        "<p class='fuente'>Lluvia y heladas de estos días y de la semana que viene, según modelo meteorológico del lote.</p>";
     }
     async function leerLluviaAhora(lat, lon) {
       if (!isFinite(lat) || !isFinite(lon)) return;
@@ -5248,6 +5286,18 @@
         (propietario ? " (contacto: " + propietario + ")" : "") +
         ". Lo contactamos al " + tel + " para ver su campo y armar Actual, Mejorando e Ideal (techo INTA).", true);
     });
+    (function bienvenidaSrsl() {
+      const el = document.getElementById("bienvenidaSrsl");
+      const btn = document.getElementById("btnBienvenida");
+      if (!el || !btn) return;
+      const k = "gemelo-srsl-bienvenida-v1";
+      try { if (sessionStorage.getItem(k) === "1") return; } catch (e) {}
+      el.hidden = false;
+      btn.addEventListener("click", function () {
+        el.hidden = true;
+        try { sessionStorage.setItem(k, "1"); } catch (e) {}
+      });
+    })();
   </script>
 </body>
 </html>
