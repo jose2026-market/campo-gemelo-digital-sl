@@ -324,6 +324,22 @@
     #dropManejo .tres-sit .sit-col { padding: 6px 4px; font-size: 10px; gap: 2px; }
     #dropManejo .tres-sit .sit-col b { font-size: 11px; }
     #dropManejo .eq-solapa { height: 12px; margin: 4px 0; }
+    #dropLluvia > .cuerpo {
+      min-width: 280px; width: min(380px, calc(100vw - 16px));
+      max-width: min(380px, calc(100vw - 12px));
+    }
+    .lluvia-ahora .veredicto {
+      border-radius: 10px; padding: 8px 10px; margin: 0 0 8px; font-size: 12px; font-weight: 700; line-height: 1.35;
+    }
+    .lluvia-ahora .veredicto.seco { background: #FFF6E5; color: #6A4B12; }
+    .lluvia-ahora .veredicto.llovio { background: #E8F0E4; color: var(--verde); }
+    .lluvia-ahora .veredicto.viene { background: #E8EEF6; color: #1C3A5C; }
+    .lluvia-ahora svg { width: 100%; height: 118px; display: block; }
+    .lluvia-ahora .cifras { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0; }
+    .lluvia-ahora .cifras b { display: block; font-size: 18px; color: var(--verde); }
+    .lluvia-ahora .cifras span { font-size: 10px; color: #5C564F; font-weight: 700; }
+    .lluvia-ahora .fuente { margin: 8px 0 0; font-size: 10px; color: #5C564F; }
+    .lluvia-ahora .fuente a { color: var(--verde); font-weight: 700; }
     .desplegables details.sub > .cuerpo {
       position: static; max-width: none; max-height: none; min-width: 0;
       width: auto; overflow: visible; padding: 0 8px 8px;
@@ -607,7 +623,8 @@
       }
       .tres-sit { gap: 3px; }
       .tres-sit .sit-col { padding: 5px 3px; font-size: 9px; }
-      #dropManejo > .cuerpo {
+      #dropManejo > .cuerpo,
+      #dropLluvia > .cuerpo {
         position: fixed;
         left: calc(8px + env(safe-area-inset-left, 0px));
         right: calc(8px + env(safe-area-inset-right, 0px));
@@ -959,7 +976,7 @@
           <details class="sub" data-capa-drop="lluvia">
             <summary>Lluvia</summary>
             <div class="cuerpo">
-              <div class="hint leyenda-capa" id="fichaLluvia">Régimen de este campo: se lee al ubicar el lote.</div>
+              <div class="hint leyenda-capa" id="fichaLluvia">Régimen de este campo: se lee al ubicar el lote. El tiempo real está en la solapa Lluvia ahora.</div>
             </div>
           </details>
           <details class="sub" data-capa-drop="forraje">
@@ -969,6 +986,13 @@
               <div class="hint leyenda-capa" id="fichaForraje">Tasa de este campo: se lee al ubicar el lote.</div>
             </div>
           </details>
+        </div>
+      </details>
+      <details id="dropLluvia">
+        <summary>Lluvia ahora</summary>
+        <div class="cuerpo lluvia-ahora">
+          <p class="hint">Lluvia de <b>este lote</b>, no de la ciudad. Últimos 7 días y los 7 que vienen. Open-Meteo, sin registro.</p>
+          <div id="panelLluviaAhora">Ubique el campo: se lee la lluvia de esas coordenadas.</div>
         </div>
       </details>
       <details id="dropManejo">
@@ -1532,7 +1556,8 @@
         " · invierno " + Math.round(e.invierno || 0) + " · primavera " + Math.round(e.primavera || 0) + " mm.<br>" +
         "Últimos 30 días: " + Math.round(L.mm30 || 0) + " mm. Semiárido de referencia ~400 mm. " +
         (factorLluvia() < 0.95 ? "Año más seco: baja la oferta y se acortan los días." :
-          (factorLluvia() > 1.05 ? "Año más húmedo: hay más margen de pastoreo." : "Cerca de un año medio."));
+          (factorLluvia() > 1.05 ? "Año más húmedo: hay más margen de pastoreo." : "Cerca de un año medio.")) +
+        " Tiempo real: solapa <b>Lluvia ahora</b>.";
     }
     function rueForraje() {
       const p = potreros[0];
@@ -2181,7 +2206,7 @@
             "<button type='button' data-quitar-aguada='" + a.id + "'>Quitar " + escHtml(a.name) + "</button>"
           ).join("") + "</div>")
       );
-      try { pintarFichaLluvia(); pintarFichaForraje(); } catch (e) {}
+      try { pintarFichaLluvia(); pintarFichaForraje(); pintarPanelLluvia(); } catch (e) {}
       const cargo = productorCargoMejora();
       const hayM1 = productorCargoEsc("m1");
       const hayOp = productorCargoEsc("optimo");
@@ -3641,8 +3666,95 @@
         return (j.elevation || []).filter((n) => isFinite(n));
       } catch (e) { return []; }
     }
+    function pintarPanelLluvia() {
+      const el = document.getElementById("panelLluviaAhora");
+      if (!el) return;
+      const A = store.lluviaAhora;
+      const L = store.lluvia;
+      if (!A || !A.ok) {
+        el.innerHTML = A && A.ok === false
+          ? "<p class='hint'>No se leyó la lluvia de este punto. Ubique el lote y vuelva a abrir esta solapa.</p>"
+          : "<p class='hint'>Ubique el campo: se lee la lluvia de esas coordenadas (Open-Meteo).</p>";
+        return;
+      }
+      const series = (A.past || []).concat(A.fut || []);
+      const max = Math.max(8, ...series.map((x) => x.mm));
+      const mm7 = (A.past || []).reduce((s, x) => s + x.mm, 0);
+      const mmF = (A.fut || []).reduce((s, x) => s + x.mm, 0);
+      let cls = "seco", ver = "Semana seca y poco pronóstico. El pasto no se recarga ahora.";
+      if (mmF >= 15) {
+        cls = "viene";
+        ver = "Se espera lluvia (~" + Math.round(mmF) + " mm en 7 días). No mueva hacienda a bajos que se anegan.";
+      } else if (mm7 >= 15) {
+        cls = "llovio";
+        ver = "Llovió ~" + Math.round(mm7) + " mm en 7 días. El verde puede tardar unos días en responder.";
+      } else if (mm7 >= 5 || mmF >= 5) {
+        cls = "llovio";
+        ver = "Lluvia escasa. Alcance para beber si cayó en el lote; no alcanza para cambiar la carga.";
+      }
+      const W = 320, H = 88, left = 8, top = 6, slot = (W - 16) / Math.max(1, series.length);
+      let g = '<svg viewBox="0 0 336 118" role="img" aria-label="Lluvia de 14 días">';
+      series.forEach((x, i) => {
+        const h = Math.max(2, (x.mm / max) * H);
+        const xx = left + i * slot + 2;
+        const fut = i >= (A.past || []).length;
+        g += '<rect x="' + xx.toFixed(1) + '" y="' + (top + H - h).toFixed(1) + '" width="' + Math.max(6, slot - 4).toFixed(1) +
+          '" height="' + h.toFixed(1) + '" rx="2" fill="' + (fut ? "#1C5C8A" : "#0D5C2C") + '"/>';
+      });
+      g += '<g fill="#5C564F" font-size="9" font-family="system-ui" text-anchor="middle">';
+      series.forEach((x, i) => {
+        const lab = String(x.d || "").slice(8, 10);
+        g += '<text x="' + (left + i * slot + slot / 2).toFixed(1) + '" y="112">' + lab + "</text>";
+      });
+      g += "</g></svg>";
+      const anual = L && L.anual ? Math.round(L.anual) + " mm en 12 meses" : "Régimen anual al ubicar el lote";
+      el.innerHTML =
+        "<div class='veredicto " + cls + "'>" + ver + "</div>" +
+        "<div class='cifras'><div><b>" + Math.round(mm7) + " mm</b><span>Últimos 7 días · verde</span></div>" +
+        "<div><b>" + Math.round(mmF) + " mm</b><span>Próximos 7 días · azul</span></div></div>" +
+        g +
+        "<p class='hint' style='margin-top:8px'>" + anual +
+        (L && L.mm30 != null ? " · 30 días: " + Math.round(L.mm30) + " mm" : "") + ".</p>" +
+        "<p class='fuente'>Fuente: <a href='https://open-meteo.com/' target='_blank' rel='noopener'>Open-Meteo</a> · sin registro. Es el punto del lote, no un pluviómetro del campo.</p>";
+    }
+    async function leerLluviaAhora(lat, lon) {
+      if (!isFinite(lat) || !isFinite(lon)) return;
+      const k = Number(lat).toFixed(3) + "," + Number(lon).toFixed(3);
+      if (leerLluviaAhora.clave === k && store.lluviaAhora && store.lluviaAhora.ok) {
+        pintarPanelLluvia();
+        return;
+      }
+      leerLluviaAhora.clave = k;
+      const el = document.getElementById("panelLluviaAhora");
+      if (el) el.innerHTML = "<p class='hint'>Leyendo lluvia de este punto…</p>";
+      try {
+        const url = "https://api.open-meteo.com/v1/forecast?latitude=" + Number(lat).toFixed(4) +
+          "&longitude=" + Number(lon).toFixed(4) +
+          "&daily=precipitation_sum&past_days=7&forecast_days=7" +
+          "&timezone=America%2FArgentina%2FSan_Luis";
+        const r = await fetch(url);
+        if (!r.ok) throw new Error("meteo");
+        const j = await r.json();
+        const days = (j.daily && j.daily.time) || [];
+        const mm = (j.daily && j.daily.precipitation_sum) || [];
+        const hoy = new Date().toISOString().slice(0, 10);
+        const past = [], fut = [];
+        for (let i = 0; i < days.length; i++) {
+          const v = Number(mm[i]);
+          const item = { d: days[i], mm: isFinite(v) && v > 0 ? +v.toFixed(1) : 0 };
+          if (days[i] < hoy) past.push(item);
+          else fut.push(item);
+        }
+        store.lluviaAhora = { ok: true, past, fut, lat: +Number(lat).toFixed(4), lon: +Number(lon).toFixed(4) };
+        pintarPanelLluvia();
+      } catch (e) {
+        store.lluviaAhora = { ok: false };
+        pintarPanelLluvia();
+      }
+    }
     async function leerLluviaCampo(lat, lon) {
       if (!isFinite(lat) || !isFinite(lon)) return;
+      try { leerLluviaAhora(lat, lon); } catch (e) {}
       const k = Number(lat).toFixed(3) + "," + Number(lon).toFixed(3);
       if (leerLluviaCampo.clave === k && store.lluvia && store.lluvia.anual && store.lluvia.fuente === "Open-Meteo") return;
       leerLluviaCampo.clave = k;
@@ -5022,6 +5134,15 @@
         if (d.id === "dropManejo") {
           const cal = document.getElementById("diagAno");
           if (cal) requestAnimationFrame(() => { try { cal.scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {} });
+        }
+        if (d.id === "dropLluvia") {
+          const pt = (store.lluvia && isFinite(store.lluvia.lat))
+            ? [store.lluvia.lat, store.lluvia.lon]
+            : (diagnosticoLote && isFinite(diagnosticoLote.lat)
+              ? [diagnosticoLote.lat, diagnosticoLote.lon]
+              : (!esMovil() && typeof DEMO_CENTRO !== "undefined" ? DEMO_CENTRO : null));
+          if (pt) try { leerLluviaAhora(pt[0], pt[1]); } catch (e) {}
+          else pintarPanelLluvia();
         }
       });
     });
