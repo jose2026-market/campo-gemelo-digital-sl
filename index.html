@@ -303,7 +303,7 @@
     .desplegables > details > .cuerpo {
       position: absolute; top: calc(100% + 6px); left: 0;
       min-width: 260px; width: max(260px, 100%);
-      max-width: min(340px, 40vw);
+      max-width: min(360px, 42vw);
       max-height: min(48dvh, calc(100dvh - 200px));
       overflow: auto; padding: 10px;
       background: linear-gradient(#fffdf8, #f4eee0);
@@ -324,10 +324,6 @@
     #dropManejo .tres-sit .sit-col { padding: 6px 4px; font-size: 10px; gap: 2px; }
     #dropManejo .tres-sit .sit-col b { font-size: 11px; }
     #dropManejo .eq-solapa { height: 12px; margin: 4px 0; }
-    #dropLluvia > .cuerpo {
-      min-width: 280px; width: min(380px, calc(100vw - 16px));
-      max-width: min(380px, calc(100vw - 12px));
-    }
     .lluvia-ahora .veredicto {
       border-radius: 10px; padding: 8px 10px; margin: 0 0 8px; font-size: 12px; font-weight: 700; line-height: 1.35;
     }
@@ -623,8 +619,7 @@
       }
       .tres-sit { gap: 3px; }
       .tres-sit .sit-col { padding: 5px 3px; font-size: 9px; }
-      #dropManejo > .cuerpo,
-      #dropLluvia > .cuerpo {
+      #dropManejo > .cuerpo {
         position: fixed;
         left: calc(8px + env(safe-area-inset-left, 0px));
         right: calc(8px + env(safe-area-inset-right, 0px));
@@ -975,8 +970,10 @@
           </details>
           <details class="sub" data-capa-drop="lluvia">
             <summary>Lluvia</summary>
-            <div class="cuerpo">
-              <div class="hint leyenda-capa" id="fichaLluvia">Régimen de este campo: se lee al ubicar el lote. El tiempo real está en la solapa Lluvia ahora.</div>
+            <div class="cuerpo lluvia-ahora">
+              <div class="hint leyenda-capa" id="fichaLluvia">Régimen de este campo: se lee al ubicar el lote.</div>
+              <p class="hint">Lluvia de <b>este lote</b>, no de la ciudad. Últimos 7 días y los 7 que vienen.</p>
+              <div id="panelLluviaAhora">Ubique el campo: se lee la lluvia de esas coordenadas.</div>
             </div>
           </details>
           <details class="sub" data-capa-drop="forraje">
@@ -986,13 +983,6 @@
               <div class="hint leyenda-capa" id="fichaForraje">Tasa de este campo: se lee al ubicar el lote.</div>
             </div>
           </details>
-        </div>
-      </details>
-      <details id="dropLluvia">
-        <summary>Lluvia ahora</summary>
-        <div class="cuerpo lluvia-ahora">
-          <p class="hint">Lluvia de <b>este lote</b>, no de la ciudad. Últimos 7 días y los 7 que vienen. Open-Meteo, sin registro.</p>
-          <div id="panelLluviaAhora">Ubique el campo: se lee la lluvia de esas coordenadas.</div>
         </div>
       </details>
       <details id="dropManejo">
@@ -1556,8 +1546,7 @@
         " · invierno " + Math.round(e.invierno || 0) + " · primavera " + Math.round(e.primavera || 0) + " mm.<br>" +
         "Últimos 30 días: " + Math.round(L.mm30 || 0) + " mm. Semiárido de referencia ~400 mm. " +
         (factorLluvia() < 0.95 ? "Año más seco: baja la oferta y se acortan los días." :
-          (factorLluvia() > 1.05 ? "Año más húmedo: hay más margen de pastoreo." : "Cerca de un año medio.")) +
-        " Tiempo real: solapa <b>Lluvia ahora</b>.";
+          (factorLluvia() > 1.05 ? "Año más húmedo: hay más margen de pastoreo." : "Cerca de un año medio."));
     }
     function rueForraje() {
       const p = potreros[0];
@@ -5135,15 +5124,6 @@
           const cal = document.getElementById("diagAno");
           if (cal) requestAnimationFrame(() => { try { cal.scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {} });
         }
-        if (d.id === "dropLluvia") {
-          const pt = (store.lluvia && isFinite(store.lluvia.lat))
-            ? [store.lluvia.lat, store.lluvia.lon]
-            : (diagnosticoLote && isFinite(diagnosticoLote.lat)
-              ? [diagnosticoLote.lat, diagnosticoLote.lon]
-              : (!esMovil() && typeof DEMO_CENTRO !== "undefined" ? DEMO_CENTRO : null));
-          if (pt) try { leerLluviaAhora(pt[0], pt[1]); } catch (e) {}
-          else pintarPanelLluvia();
-        }
       });
     });
     function syncCapaAbierta() {
@@ -5163,6 +5143,15 @@
           OVERLAYS.forEach((k) => {
             if (keep.indexOf(k) < 0 && capaEncendida(k)) setCapa(k, false);
           });
+          if (d.dataset.capaDrop === "lluvia") {
+            const pt = (store.lluvia && isFinite(store.lluvia.lat))
+              ? [store.lluvia.lat, store.lluvia.lon]
+              : (diagnosticoLote && isFinite(diagnosticoLote.lat)
+                ? [diagnosticoLote.lat, diagnosticoLote.lon]
+                : (!esMovil() && typeof DEMO_CENTRO !== "undefined" ? DEMO_CENTRO : null));
+            if (pt) try { leerLluviaAhora(pt[0], pt[1]); } catch (e) {}
+            else pintarPanelLluvia();
+          }
         }
         syncCapaAbierta();
       });
