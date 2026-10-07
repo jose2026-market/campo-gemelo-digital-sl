@@ -333,7 +333,18 @@
     .lluvia-ahora .veredicto.seco { background: #FFF6E5; color: #6A4B12; }
     .lluvia-ahora .veredicto.llovio { background: #E8F0E4; color: var(--verde); }
     .lluvia-ahora .veredicto.viene { background: #E8EEF6; color: #1C3A5C; }
-    .lluvia-ahora svg { width: 100%; height: 92px; display: block; }
+    .lluvia-ahora .graf { display: flex; align-items: stretch; gap: 8px; }
+    .lluvia-ahora .graf svg { flex: 1; min-width: 0; width: auto; height: 92px; display: block; }
+    .lluvia-ahora .heladas {
+      width: 86px; flex-shrink: 0; border-radius: 8px; padding: 6px 7px;
+      display: flex; flex-direction: column; justify-content: center;
+      font-family: system-ui, Segoe UI, sans-serif; line-height: 1.2;
+    }
+    .lluvia-ahora .heladas.ok { background: #E8F0E4; color: var(--verde); }
+    .lluvia-ahora .heladas.hielo { background: #E8EEF6; color: #1C3A5C; }
+    .lluvia-ahora .heladas small { font-size: 8px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
+    .lluvia-ahora .heladas b { display: block; font-size: 13px; margin: 3px 0 2px; }
+    .lluvia-ahora .heladas span { font-size: 9px; font-weight: 700; }
     .lluvia-ahora .cifras { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 0 0 4px; }
     .lluvia-ahora .cifras b { display: block; font-size: 15px; color: var(--verde); line-height: 1.1; }
     .lluvia-ahora .cifras span { font-size: 9px; color: #5C564F; font-weight: 700; }
@@ -3706,17 +3717,31 @@
         g += '<text x="' + (left + i * slot + slot / 2).toFixed(1) + '" y="88">' + lab + "</text>";
       });
       g += "</g></svg>";
+      const mins = series.map((x) => x.tmin).filter((t) => t != null && isFinite(t));
+      const nHielo = series.filter((x) => x.tmin != null && x.tmin <= 0).length;
+      const prox = (A.fut || []).find((x) => x.tmin != null && x.tmin <= 0);
+      const tHoy = (A.fut && A.fut[0] && A.fut[0].tmin != null) ? A.fut[0].tmin : null;
+      const tLo = mins.length ? Math.min.apply(null, mins) : null;
+      let helCls = "ok", helTit = "No hiela", helSub = tHoy != null ? ("mín. " + Math.round(tHoy) + "°") : "sin dato";
+      if (nHielo) {
+        helCls = "hielo";
+        helTit = nHielo === 1 ? "1 noche" : nHielo + " noches";
+        helSub = prox
+          ? ("próx. " + String(prox.d).slice(8, 10) + " · " + Math.round(prox.tmin) + "°")
+          : (tLo != null ? ("mín. " + Math.round(tLo) + "°") : "heló");
+      }
       el.innerHTML =
         "<div class='veredicto " + cls + "'>" + ver + "</div>" +
         "<div class='cifras'><div><b>" + Math.round(mm7) + " mm</b><span>7 días · verde</span></div>" +
         "<div><b>" + Math.round(mmF) + " mm</b><span>7 que vienen · azul</span></div></div>" +
-        g +
+        "<div class='graf'>" + g +
+        "<div class='heladas " + helCls + "'><small>Heladas</small><b>" + helTit + "</b><span>" + helSub + "</span></div></div>" +
         "<p class='fuente'>Open-Meteo · este lote, no un pluviómetro.</p>";
     }
     async function leerLluviaAhora(lat, lon) {
       if (!isFinite(lat) || !isFinite(lon)) return;
       const k = Number(lat).toFixed(3) + "," + Number(lon).toFixed(3);
-      if (leerLluviaAhora.clave === k && store.lluviaAhora && store.lluviaAhora.ok) {
+      if (leerLluviaAhora.clave === k && store.lluviaAhora && store.lluviaAhora.ok && store.lluviaAhora.conHeladas) {
         pintarPanelLluvia();
         return;
       }
@@ -3726,22 +3751,28 @@
       try {
         const url = "https://api.open-meteo.com/v1/forecast?latitude=" + Number(lat).toFixed(4) +
           "&longitude=" + Number(lon).toFixed(4) +
-          "&daily=precipitation_sum&past_days=7&forecast_days=7" +
+          "&daily=precipitation_sum,temperature_2m_min&past_days=7&forecast_days=7" +
           "&timezone=America%2FArgentina%2FSan_Luis";
         const r = await fetch(url);
         if (!r.ok) throw new Error("meteo");
         const j = await r.json();
         const days = (j.daily && j.daily.time) || [];
         const mm = (j.daily && j.daily.precipitation_sum) || [];
+        const tmin = (j.daily && j.daily.temperature_2m_min) || [];
         const hoy = new Date().toISOString().slice(0, 10);
         const past = [], fut = [];
         for (let i = 0; i < days.length; i++) {
           const v = Number(mm[i]);
-          const item = { d: days[i], mm: isFinite(v) && v > 0 ? +v.toFixed(1) : 0 };
+          const t = Number(tmin[i]);
+          const item = {
+            d: days[i],
+            mm: isFinite(v) && v > 0 ? +v.toFixed(1) : 0,
+            tmin: isFinite(t) ? +t.toFixed(1) : null
+          };
           if (days[i] < hoy) past.push(item);
           else fut.push(item);
         }
-        store.lluviaAhora = { ok: true, past, fut, lat: +Number(lat).toFixed(4), lon: +Number(lon).toFixed(4) };
+        store.lluviaAhora = { ok: true, conHeladas: true, past, fut, lat: +Number(lat).toFixed(4), lon: +Number(lon).toFixed(4) };
         pintarPanelLluvia();
       } catch (e) {
         store.lluviaAhora = { ok: false };
