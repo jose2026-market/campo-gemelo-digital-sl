@@ -536,6 +536,55 @@
     }
     .inicio .nota { max-width: 720px; margin: 14px auto 0; font-size: 12px; line-height: 1.4; color: #6A5A30; }
     .inicio .nota a { color: var(--verde); }
+    #inicioSimple { display: none; }
+    body.proto-inicio.vista-inicio #inicio > .hero,
+    body.proto-inicio.vista-inicio #inicio > .servicios,
+    body.proto-inicio.vista-inicio #inicio > .nota { display: none; }
+    body.proto-inicio.vista-inicio #inicioSimple { display: block; max-width: 720px; margin: 0 auto; }
+    #inicioSimple .hero { margin-bottom: 12px; }
+    #inicioSimple .hero h1 { font-size: 26px; }
+    .inicio-tarjeta {
+      position: relative; display: block; width: 100%; box-sizing: border-box;
+      text-align: left; background: #fff; color: var(--tierra);
+      border: 1px solid var(--oro-claro); border-radius: 12px;
+      padding: 12px 14px; margin: 0 0 10px; scroll-margin-top: 8px;
+    }
+    button.inicio-tarjeta { cursor: pointer; font-weight: 700; }
+    .inicio-tarjeta.sem-verde { border-left: 4px solid #1B7A4A; }
+    .inicio-tarjeta.sem-amarillo { border-left: 4px solid #C4A035; }
+    .inicio-tarjeta.sem-rojo { border-left: 4px solid #B42318; }
+    .inicio-tarjeta .etiq {
+      margin: 0 28px 6px 0; font-size: 11px; font-weight: 800;
+      letter-spacing: .04em; text-transform: uppercase; color: var(--verde);
+    }
+    .inicio-tarjeta .inicio-tit {
+      display: block; margin: 0 28px 4px 0; font-size: 16px; font-weight: 800;
+      line-height: 1.25; color: var(--verde);
+    }
+    .inicio-tarjeta .inicio-linea {
+      display: block; margin-top: 4px; font-size: 14px; font-weight: 700;
+      line-height: 1.35; color: #1C2B26;
+    }
+    .inicio-tarjeta p { margin: 0; font-size: 14px; line-height: 1.35; color: #1C2B26; }
+    .inicio-cifras { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin: 0 0 8px; }
+    .inicio-cifras.dos { grid-template-columns: 1fr 1fr; }
+    .inicio-cifras b { display: block; font-size: 20px; font-weight: 800; color: var(--verde); line-height: 1.1; }
+    .inicio-cifras span { display: block; margin-top: 2px; font-size: 11px; font-weight: 700; color: #5C564F; line-height: 1.2; }
+    .inicio-tarjeta .fuente { margin: 6px 0 0; font-size: 11px; font-weight: 700; color: #5C564F; }
+    .inicio-tarjeta .fuente.ejemplo { color: #6A4B12; }
+    .sem-punto {
+      position: absolute; top: 12px; right: 12px;
+      width: 14px; height: 14px; border-radius: 50%;
+    }
+    .sem-punto.verde { background: #1B7A4A; }
+    .sem-punto.amarillo { background: #C4A035; }
+    .sem-punto.rojo { background: #B42318; }
+    .inicio-acciones { display: grid; gap: 8px; margin-top: 2px; }
+    .inicio-acciones button {
+      width: 100%; border-radius: 8px; font-weight: 800; font-size: 15px;
+      padding: 12px 14px; border: 1px solid var(--verde); background: var(--verde); color: #fff;
+    }
+    .inicio-acciones button.sec { background: #fff; color: var(--verde); border-color: var(--oro); }
     .informe {
       position: absolute; inset: 0; z-index: 1500;
       background: var(--crema); color: var(--tierra);
@@ -1072,6 +1121,31 @@
     </div>
   </header>
   <section class="inicio" id="inicio">
+    <div id="inicioSimple">
+      <div class="hero">
+        <h1>Inicio simple</h1>
+        <p>Lluvia, pasto disponible y la alerta del día. Toque la alerta para abrir la hoja.</p>
+      </div>
+      <article class="inicio-tarjeta" id="iniLluvia" data-paso="lluvia">
+        <p class="etiq">Lluvia</p>
+        <div id="iniLluviaCuerpo"><p>Leyendo la lluvia de este punto…</p></div>
+      </article>
+      <article class="inicio-tarjeta" id="iniPasto" data-paso="pasto">
+        <p class="etiq">Pasto disponible</p>
+        <i class="sem-punto" id="iniPastoSem" hidden></i>
+        <div id="iniPastoCuerpo"></div>
+      </article>
+      <button type="button" class="inicio-tarjeta" id="iniAlerta" data-paso="alerta">
+        <p class="etiq">Alerta del día</p>
+        <i class="sem-punto" id="iniAlertaSem" hidden></i>
+        <span id="iniAlertaCuerpo"></span>
+      </button>
+      <div class="inicio-acciones">
+        <button type="button" id="iniVerMapa">Ver el mapa</button>
+        <button type="button" class="sec" id="iniCargarHacienda">Cargar hacienda</button>
+        <button type="button" class="sec" id="iniVerAlerta">Ver la alerta</button>
+      </div>
+    </div>
     <div class="hero">
       <h1>Datos del territorio para decidir en el campo</h1>
       <p>Servicio al productor: ver su lote, leer la situación actual y salir con un informe de puntos críticos. Corto y mediano plazo, con o sin inversión inmediata. Sin desmonte y sin recortar el agua de bebida.</p>
@@ -1537,6 +1611,23 @@
     const DEMO_NOMBRE = "Gemelo Digital Ganadero";
     const KEY = "gemelo-500ha-manejo-v1";
     function esMovil() { return window.matchMedia("(max-width: 900px)").matches; }
+    const PROTO_INICIO_KEY = "gemelo-proto-inicio";
+    const PROTO_LLUVIA_KEY = "gemelo-proto-inicio-lluvia";
+    function protoInicioPedido() {
+      try {
+        const q = new URLSearchParams(location.search).get("proto");
+        if (q === "inicio") {
+          try { localStorage.setItem(PROTO_INICIO_KEY, "1"); } catch (e) {}
+          return true;
+        }
+        if (q === "off" || q === "0") {
+          try { localStorage.removeItem(PROTO_INICIO_KEY); } catch (e) {}
+          return false;
+        }
+        return localStorage.getItem(PROTO_INICIO_KEY) === "1";
+      } catch (e) { return false; }
+    }
+    function protoInicio() { return esMovil() && protoInicioPedido(); }
     function codificarVer(obj) {
       return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
     }
@@ -1696,6 +1787,7 @@
       if (document.body.classList.contains("vista-hacienda") && typeof pintarHacienda === "function") pintarHacienda();
       if (document.body.classList.contains("vista-alerta") && typeof pintarAlerta === "function") pintarAlerta();
       if (document.body.classList.contains("vista-carbono") && typeof pintarCarbono === "function") pintarCarbono();
+      if (document.body.classList.contains("vista-inicio") && typeof pintarInicioSimple === "function") pintarInicioSimple();
     }
     function nomEscena(esc) {
       return { actual: "Inicial", m1: "Mejorando", optimo: "Ideal" }[esc] || esc;
@@ -2751,6 +2843,7 @@
       setTxt("hintRepro", esp.desteteLab + " inicial ~" + act.destete + " %. El 85 % es techo INTA de vacas de cría; en oveja y cabra se carga el dato del productor.");
       setTxt("hintAguaMod", "Una " + esp.nombre + " ~" + esp.aguaL + " L/día. Alcance de cría 400 m. " + (muyLejos[0] ? ("Lote a " + muyLejos[0].dist + " m: acercar bebedero.") : "Detalle en el informe."));
       try { pintarCifrasActuales(); pintarCifrasVivas(); pintarTresSit(); } catch (e) {}
+      try { if (typeof pintarInicioSimple === "function") pintarInicioSimple(); } catch (e) {}
     }
     function dato(p) {
       if (escSel === "actual") return datoEscena(p, "actual");
@@ -4262,8 +4355,9 @@
     async function leerLluviaAhora(lat, lon) {
       if (!isFinite(lat) || !isFinite(lon)) return;
       const k = Number(lat).toFixed(3) + "," + Number(lon).toFixed(3);
-      if (leerLluviaAhora.clave === k && store.lluviaAhora && store.lluviaAhora.ok && store.lluviaAhora.conHeladas) {
+      if (leerLluviaAhora.clave === k && store.lluviaAhora && store.lluviaAhora.ok && store.lluviaAhora.conHeladas && store.lluviaAhora.conProb) {
         pintarPanelLluvia();
+        try { pintarInicioSimple(); } catch (e) {}
         return;
       }
       leerLluviaAhora.clave = k;
@@ -4272,7 +4366,7 @@
       try {
         const url = "https://api.open-meteo.com/v1/forecast?latitude=" + Number(lat).toFixed(4) +
           "&longitude=" + Number(lon).toFixed(4) +
-          "&daily=precipitation_sum,temperature_2m_min&past_days=7&forecast_days=7" +
+          "&daily=precipitation_sum,temperature_2m_min,precipitation_probability_max&past_days=7&forecast_days=7" +
           "&timezone=America%2FArgentina%2FSan_Luis";
         const r = await fetch(url);
         if (!r.ok) throw new Error("meteo");
@@ -4280,24 +4374,35 @@
         const days = (j.daily && j.daily.time) || [];
         const mm = (j.daily && j.daily.precipitation_sum) || [];
         const tmin = (j.daily && j.daily.temperature_2m_min) || [];
+        const prob = (j.daily && j.daily.precipitation_probability_max) || [];
         const hoy = new Date().toISOString().slice(0, 10);
         const past = [], fut = [];
         for (let i = 0; i < days.length; i++) {
           const v = Number(mm[i]);
           const t = Number(tmin[i]);
+          const pr = Number(prob[i]);
           const item = {
             d: days[i],
             mm: isFinite(v) && v > 0 ? +v.toFixed(1) : 0,
-            tmin: isFinite(t) ? +t.toFixed(1) : null
+            tmin: isFinite(t) ? +t.toFixed(1) : null,
+            prob: isFinite(pr) ? Math.round(pr) : null
           };
           if (days[i] < hoy) past.push(item);
           else fut.push(item);
         }
-        store.lluviaAhora = { ok: true, conHeladas: true, past, fut, lat: +Number(lat).toFixed(4), lon: +Number(lon).toFixed(4) };
+        store.lluviaAhora = {
+          ok: true, conHeladas: true, conProb: true, past, fut,
+          lat: +Number(lat).toFixed(4), lon: +Number(lon).toFixed(4)
+        };
+        if (protoInicio()) {
+          try { localStorage.setItem(PROTO_LLUVIA_KEY, JSON.stringify(store.lluviaAhora)); } catch (e) {}
+        }
         pintarPanelLluvia();
+        try { pintarInicioSimple(); } catch (e) {}
       } catch (e) {
         store.lluviaAhora = { ok: false };
         pintarPanelLluvia();
+        try { pintarInicioSimple(); } catch (err) {}
       }
     }
     async function leerLluviaCampo(lat, lon) {
@@ -5505,6 +5610,191 @@
       abrir(1);
     }
 
+    function hoySanLuis() {
+      try {
+        return new Date().toLocaleDateString("en-CA", { timeZone: "America/Argentina/San_Luis" });
+      } catch (e) {
+        return new Date().toISOString().slice(0, 10);
+      }
+    }
+    function fmtInicioNum(n, dec) {
+      const x = Number(n);
+      if (!isFinite(x)) return "—";
+      return x.toLocaleString("es-AR", { maximumFractionDigits: dec, minimumFractionDigits: dec });
+    }
+    function leerLluviaGuardada() {
+      try {
+        const A = JSON.parse(localStorage.getItem(PROTO_LLUVIA_KEY) || "null");
+        return A && A.ok ? A : null;
+      } catch (e) { return null; }
+    }
+    function cifrasDeLluvia(A) {
+      const serie = (A.past || []).concat(A.fut || []);
+      const hoy = hoySanLuis();
+      const iHoy = serie.findIndex((x) => x.d === hoy);
+      const previos = iHoy >= 0 ? serie.slice(Math.max(0, iHoy - 7), iHoy) : (A.past || []).slice(-7);
+      const proximos = iHoy >= 0 ? serie.slice(iHoy, iHoy + 3) : (A.fut || []).slice(0, 3);
+      const suma = (arr) => arr.reduce((s, x) => s + (Number(x.mm) || 0), 0);
+      const mm7 = suma(previos);
+      const mm3 = suma(proximos);
+      const dia = iHoy >= 0 ? serie[iHoy] : (A.fut || [])[0];
+      const prob = dia && dia.prob != null ? dia.prob : null;
+      let frase = "Semana seca. El pasto no se recarga ahora.";
+      if (mm3 >= 15) frase = "Se espera lluvia. No mueva hacienda a bajos.";
+      else if (mm7 >= 15) frase = "Llovió. El verde puede tardar unos días.";
+      else if (mm7 >= 5 || mm3 >= 5) frase = "Lluvia escasa. No cambia la carga.";
+      return { mm7: mm7, mm3: mm3, prob: prob, frase: frase };
+    }
+    function peorSem(a, b) {
+      const rank = { rojo: 3, amarillo: 2, verde: 1 };
+      return (rank[a] || 0) >= (rank[b] || 0) ? a : b;
+    }
+    function medirPastoInicio() {
+      const usoDemo = !potreros.length;
+      const prev = usoDemo ? {
+        potreros: potreros,
+        aguadas: aguadas,
+        esDemoCalera: esDemoCalera,
+        lluvia: store.lluvia
+      } : null;
+      if (usoDemo) {
+        potreros = JSON.parse(JSON.stringify(DEMO_POTREROS));
+        aguadas = JSON.parse(JSON.stringify(DEMO_AGUADAS));
+        esDemoCalera = true;
+        if (!store.lluvia || !Number(store.lluvia.anual)) {
+          store.lluvia = {
+            anual: 307.7, mm30: 0,
+            estaciones: { verano: 145, otono: 62, invierno: 18, primavera: 83 },
+            fuente: "REM La Calera"
+          };
+        }
+      }
+      try {
+        let kg = 0;
+        let sem = "verde";
+        potreros.forEach((p) => {
+          const tipo = (store[p.n] && store[p.n].tipo) || "ganadero";
+          const base = datoEscena(p, "actual");
+          const der = diasDeCarga(p, Object.assign({}, base, { _esc: "actual" }));
+          kg += (Number(der.maxDias) || 0) * (Number(der.ev) || 0) * 12;
+          let eq = null;
+          try { eq = equilibrioDe(p); } catch (e) { eq = null; }
+          if (eq && eq.sem) sem = peorSem(sem, eq.sem);
+        });
+        const esp = especieAct();
+        const cab = cabezasTablero("actual");
+        const ev = (Number(cab) || 0) * (esp.evPorCabeza || 1);
+        const dias = ev > 0 ? Math.max(0, Math.round(kg / (ev * 12))) : 0;
+        return {
+          kg: kg, dias: dias, cab: nAnimales(cab), sem: sem || "amarillo",
+          nombre: esp.plural, ejemplo: usoDemo, hay: potreros.length > 0
+        };
+      } finally {
+        if (prev) {
+          potreros = prev.potreros;
+          aguadas = prev.aguadas;
+          esDemoCalera = prev.esDemoCalera;
+          if (prev.lluvia) store.lluvia = prev.lluvia;
+          else if (store.lluvia && store.lluvia.fuente === "REM La Calera") store.lluvia = prev.lluvia;
+        }
+      }
+    }
+    function semaforoAlerta(a) {
+      if (!a || !a.listo) return "amarillo";
+      const dias = a.dias && Number(a.dias.maxDias);
+      if (dias && dias <= 7) return "rojo";
+      const reco = String(a.reco || "");
+      if (/no estire|un solo lote|pelado|sobre-ramonear|Falta el alambrado/i.test(reco)) return "amarillo";
+      if (/Revise sombra|hoy o en estos días/i.test(String(a.paricion || ""))) return "amarillo";
+      return "verde";
+    }
+    function lineaAlertaInicio(a) {
+      if (!a || !a.listo) return "Elija cabras u ovejas en Hacienda. Toque para abrir la hoja.";
+      const reco = String(a.reco || "").replace(/\s+/g, " ").trim();
+      return reco || "Toque para ver el estado del día.";
+    }
+    function ponerSem(el, sem) {
+      if (!el) return;
+      el.hidden = !sem;
+      el.className = "sem-punto" + (sem ? (" " + sem) : "");
+      const nombre = { verde: "en orden", amarillo: "atención", rojo: "urgente" }[sem] || "";
+      if (nombre) el.setAttribute("aria-label", "Semáforo " + nombre);
+    }
+    function pintarInicioSimple() {
+      if (pintarInicioSimple.ocupado || !protoInicio()) return;
+      pintarInicioSimple.ocupado = true;
+      try {
+        const lluviaEl = document.getElementById("iniLluviaCuerpo");
+        const pastoEl = document.getElementById("iniPastoCuerpo");
+        const alertaEl = document.getElementById("iniAlertaCuerpo");
+        if (!lluviaEl || !pastoEl || !alertaEl) return;
+        const viva = store.lluviaAhora && store.lluviaAhora.ok ? store.lluviaAhora : null;
+        const guardada = !viva && store.lluviaAhora && store.lluviaAhora.ok === false ? leerLluviaGuardada() : null;
+        if (viva || guardada) {
+          const c = cifrasDeLluvia(viva || guardada);
+          const prob = c.prob == null ? "—" : (fmtInicioNum(c.prob, 0) + " %");
+          lluviaEl.innerHTML =
+            "<div class='inicio-cifras'>" +
+            "<div><b>" + fmtInicioNum(c.mm7, 1) + " mm</b><span>últimos 7 días</span></div>" +
+            "<div><b>" + fmtInicioNum(c.mm3, 1) + " mm</b><span>próximos 3 días</span></div>" +
+            "<div><b>" + prob + "</b><span>probabilidad hoy</span></div></div>" +
+            "<p>" + escHtml(c.frase) + "</p>" +
+            "<p class='fuente'>" + (viva ? "Open-Meteo · La Calera" : "Último dato guardado") + "</p>";
+        } else if (store.lluviaAhora && store.lluviaAhora.ok === false) {
+          lluviaEl.innerHTML =
+            "<div class='inicio-cifras'>" +
+            "<div><b>12,0 mm</b><span>últimos 7 días</span></div>" +
+            "<div><b>4,0 mm</b><span>próximos 3 días</span></div>" +
+            "<div><b>30 %</b><span>probabilidad hoy</span></div></div>" +
+            "<p>Lluvia escasa. No cambia la carga.</p>" +
+            "<p class='fuente ejemplo'>dato de ejemplo</p>";
+        } else {
+          lluviaEl.innerHTML = "<p>Leyendo la lluvia de este punto…</p>";
+        }
+        let pasto;
+        try { pasto = medirPastoInicio(); } catch (e) { pasto = null; }
+        const pastoTarjeta = document.getElementById("iniPasto");
+        if (!pasto || !pasto.hay) {
+          pasto = { kg: 18000, dias: 21, cab: 40, sem: "amarillo", nombre: "vacas de cría", ejemplo: true, hay: false };
+          if (pastoTarjeta) pastoTarjeta.className = "inicio-tarjeta sem-amarillo";
+          ponerSem(document.getElementById("iniPastoSem"), "amarillo");
+          pastoEl.innerHTML =
+            "<div class='inicio-cifras dos'>" +
+            "<div><b>18,0 t MS</b><span>del campo</span></div>" +
+            "<div><b>21 días</b><span>con la hacienda</span></div></div>" +
+            "<p>Alcanza para 21 días · 40 vacas de cría</p>" +
+            "<p class='fuente ejemplo'>dato de ejemplo</p>";
+        } else {
+          const ley = { verde: "En orden", amarillo: "Atención", rojo: "Urgente" }[pasto.sem] || "Atención";
+          if (pastoTarjeta) pastoTarjeta.className = "inicio-tarjeta sem-" + pasto.sem;
+          ponerSem(document.getElementById("iniPastoSem"), pasto.sem);
+          pastoEl.innerHTML =
+            "<div class='inicio-cifras dos'>" +
+            "<div><b>" + fmtInicioNum(pasto.kg / 1000, 1) + " t MS</b><span>del campo</span></div>" +
+            "<div><b>" + fmtInicioNum(pasto.dias, 0) + " días</b><span>" + escHtml(ley) + "</span></div></div>" +
+            "<p>Alcanza para " + fmtInicioNum(pasto.dias, 0) + " días · " + fmtInicioNum(pasto.cab, 0) + " " + escHtml(pasto.nombre) + "</p>" +
+            "<p class='fuente" + (pasto.ejemplo ? " ejemplo" : "") + "'>" +
+            (pasto.ejemplo ? "dato de ejemplo · La Calera" : "Balance del campo abierto") + "</p>";
+        }
+        let alerta = null;
+        try { alerta = armarAlerta(); } catch (e) { alerta = null; }
+        const semA = semaforoAlerta(alerta);
+        const alertaTarjeta = document.getElementById("iniAlerta");
+        if (alertaTarjeta) alertaTarjeta.className = "inicio-tarjeta sem-" + semA;
+        ponerSem(document.getElementById("iniAlertaSem"), semA);
+        const titulo = alerta && alerta.titulo ? alerta.titulo : "Estado diario";
+        alertaEl.innerHTML =
+          "<span class='inicio-tit'>" + escHtml(titulo) + "</span>" +
+          "<span class='inicio-linea'>" + escHtml(lineaAlertaInicio(alerta)) + "</span>";
+      } finally {
+        pintarInicioSimple.ocupado = false;
+      }
+    }
+    function aplicarProtoInicio() {
+      const on = protoInicio();
+      document.body.classList.toggle("proto-inicio", on);
+      if (on) pintarInicioSimple();
+    }
     function mostrarVista(id) {
       document.body.classList.remove("vista-inicio", "vista-visor", "vista-informe", "vista-ubicar", "vista-sanidad", "vista-carbono", "vista-alerta", "vista-hacienda");
       document.body.classList.add("vista-" + id);
@@ -5531,6 +5821,7 @@
       if (id === "carbono") pintarCarbono();
       if (id === "alerta") pintarAlerta();
       if (id === "hacienda") pintarHacienda();
+      if (id === "inicio") aplicarProtoInicio();
     }
     function irConsulta() {
       mostrarVista("visor");
@@ -6205,6 +6496,21 @@
       b.addEventListener("click", () => setCapa(b.dataset.capa, !capaEncendida(b.dataset.capa), true));
     });
     document.getElementById("btnVerDemo").addEventListener("click", () => mostrarVista("visor"));
+    const iniVerMapa = document.getElementById("iniVerMapa");
+    const iniCargarHacienda = document.getElementById("iniCargarHacienda");
+    const iniVerAlerta = document.getElementById("iniVerAlerta");
+    const iniAlerta = document.getElementById("iniAlerta");
+    if (iniVerMapa) iniVerMapa.addEventListener("click", () => mostrarVista("visor"));
+    if (iniCargarHacienda) iniCargarHacienda.addEventListener("click", () => mostrarVista("hacienda"));
+    if (iniVerAlerta) iniVerAlerta.addEventListener("click", () => mostrarVista("alerta"));
+    if (iniAlerta) iniAlerta.addEventListener("click", () => mostrarVista("alerta"));
+    try { aplicarProtoInicio(); } catch (e) {}
+    try {
+      window.matchMedia("(max-width: 900px)").addEventListener("change", () => {
+        document.body.classList.toggle("proto-inicio", protoInicio());
+        if (document.body.classList.contains("vista-inicio")) aplicarProtoInicio();
+      });
+    } catch (e) {}
     document.getElementById("btnIrConsulta").addEventListener("click", irConsulta);
     document.getElementById("btnIrUbicar").addEventListener("click", () => mostrarVista("ubicar"));
     document.querySelectorAll(".volver-hacienda").forEach((b) => b.addEventListener("click", () => mostrarVista("hacienda")));
@@ -6883,6 +7189,7 @@
       if (!el || !btn) return;
       const k = "gemelo-srsl-bienvenida-v1";
       try { if (sessionStorage.getItem(k) === "1") return; } catch (e) {}
+      if (typeof protoInicio === "function" && protoInicio()) return;
       el.hidden = false;
       btn.addEventListener("click", function () {
         el.hidden = true;
